@@ -1,0 +1,18 @@
+{% extends 'base.html' %} {% block content %} {% load static %}
+<div class="row">
+  {% for card in cards %}
+  <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
+    <div class="card">
+      <div class="card-body text-center">
+        <img src="{% static 'img/' %}{{ card.icon }}" class="fas fa-3x mb-3" />
+        <h5 class="card-title">{{ card.title }}</h5>
+        <p class="card-text">{{ card.description }}</p>
+        <a href="{% url 'home' %}" class="btn btn-primary"
+          >Go to {{ card.title }}</a
+        >
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
