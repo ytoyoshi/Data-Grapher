@@ -1,18 +1,21 @@
 {% extends 'base.html' %} {% block content %} {% load static %}
 <div class="row">
-  {% for card in cards %}
+  {% for page in pages %}
   <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
-    <div class="card">
-      <div class="card-body text-center">
-        <img src="{% static 'img/' %}{{ card.icon }}" class="fas fa-3x mb-3" />
-        <h5 class="card-title">{{ card.title }}</h5>
-        <p class="card-text">{{ card.description }}</p>
-        <a href="{% url 'home' %}" class="btn btn-primary"
-          >Go to {{ card.title }}</a
-        >
+      <div class="card">
+        <div class="card-body text-center">
+          {% if page.icon %}
+          <img src="{% static 'img/' %}{{ page.icon }}" class="mb-3" />
+          {% endif %}
+          <h5 class="card-title">{{ page.title }}</h5>
+          <p class="card-text">{{ page.description }}</p>
+          {% with page.url as url_name %}
+                <a href="{% url url_name %}" class="btn btn-primary">{{ page.title }}</a>
+          {% endwith %}
+        </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
+  {% endblock %}
 </div>
-{% endblock %}

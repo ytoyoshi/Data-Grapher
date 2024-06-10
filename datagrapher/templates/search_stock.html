@@ -1,0 +1,26 @@
+{% extends 'base.html' %} 
+{% block title %}Search Stock{% endblock %} 
+{%block　content %}
+<div class="card">
+  <div class="card-header bg-primary text-white">Search Stock</div>
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="col-md-6 mb-3">
+          {{ search_form.symbol.label_tag }} {{ search_form.symbol }}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-6 mb-3">
+          {{ date_form.start_date.label_tag }} {{ date_form.start_date }}
+        </div>
+        <div class="col-md-6 mb-3">
+          {{ date_form.end_date.label_tag }} {{ date_form.end_date }}
+        </div>
+      </div>
+      <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

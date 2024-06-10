@@ -25,3 +25,35 @@ class User(AbstractUser):
         related_name="user_set_custom",  
         related_query_name="user",
     )
+
+class Page(models.Model):
+    icon = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    url = models.CharField(max_length=255, default="home")
+    show_on_home = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+    
+class Stock(models.Model):
+    symbol = models.CharField(max_length=10)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class StockData(models.Model):
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    date = models.DateField()
+    open = models.FloatField()
+    high = models.FloatField()
+    low = models.FloatField()
+    close = models.FloatField()
+    volume = models.IntegerField()
+
+    class Meta:
+        unique_together = ('stock', 'date')
+    
+    def __str__(self):
+        return f"{self.stock.symbol} - {self.date}"

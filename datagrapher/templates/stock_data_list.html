@@ -1,0 +1,24 @@
+{% extends 'base.html' %} {% block title %}Stock Data List{% endblock %} {%
+block content %}
+<div class="card">
+  <div class="card-header bg-primary text-white">Stock Data List</div>
+  <div class="card-body">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for stock in stocks %}
+        <tr>
+          <td>{{ stock.symbol }}</td>
+          <td>{{ stock.name }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
