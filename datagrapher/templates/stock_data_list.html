@@ -1,5 +1,6 @@
-{% extends 'base.html' %} {% block title %}Stock Data List{% endblock %} {%
-block content %}
+{% extends 'base.html' %} 
+{% block title %}Stock Data List{% endblock %} 
+{% block content %}
 <div class="card">
   <div class="card-header bg-primary text-white">Stock Data List</div>
   <div class="card-body">
@@ -13,7 +14,7 @@ block content %}
       <tbody>
         {% for stock in stocks %}
         <tr>
-          <td>{{ stock.symbol }}</td>
+          <td><a href="{% url 'stock_detail' stock.symbol %}">{{ stock.symbol }}</a></td>
           <td>{{ stock.name }}</td>
         </tr>
         {% endfor %}

@@ -1,12 +1,16 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from .forms import LoginForm, StockSearchForm, DateRangeForm
 from .models import Page, Stock, StockData
-import yfinance as yf
+from .utils import fetch_stock_data, save_stock_data
+import logging
+
+logger = logging.getLogger(__name__)
 
 class login_view(LoginView):
     template_name = "login.html"
@@ -47,25 +51,17 @@ def search_stock(request):
         if search_form.is_valid() and date_form.is_valid():
             symbol = search_form.cleaned_data['symbol']
             start_date = date_form.cleaned_data['start_date']
-            end_date = date_form.cleaned_data['end_date']
-            
-            stock, created = Stock.objects.get_or_create(symbol=symbol, defaults={'name': symbol})
-            
-            data = yf.download(symbol, start=start_date, end=end_date)
-            
-            for date, row in data.iterrows():
-                StockData.objects.update_or_create(
-                    stock=stock,
-                    date=date,
-                    defaults={
-                        'open': row['Open'],
-                        'high': row['High'],
-                        'low': row['Low'],
-                        'close': row['Close'],
-                        'volume': row['Volume'],
-                    }
-                )
-            return redirect('stock_data_list')
+
+            try:
+                data, company_name = fetch_stock_data(symbol, start_date)
+                save_stock_data(symbol, data, company_name)
+                return redirect('stock_data_list')
+            except ValueError as e:
+                messages.error(request, f"Error retrieving data for symbol {symbol}.: {str(e)}")
+            except Exception as e:
+                messages.error(request, f"An unexpected error occurred.: {str(e)}")
+        else:
+            messages.error(request, "Invalid form data")
     else:
         search_form = StockSearchForm()
         date_form = DateRangeForm()
@@ -75,3 +71,8 @@ def search_stock(request):
 def stock_data_list(request):
     stocks = Stock.objects.all()
     return render(request, 'stock_data_list.html', {'stocks': stocks})
+
+def stock_detail(request, symbol):
+    stock = get_object_or_404(Stock, symbol=symbol)
+    stock_data = StockData.objects.filter(stock = stock)
+    return render(request, 'stock_detail.html', {'stock': stock, 'stock_data': stock_data})

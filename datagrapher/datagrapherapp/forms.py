@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -17,5 +19,14 @@ class StockSearchForm(forms.Form):
     symbol = forms.CharField(label='Stock Symbol', max_length=10)
 
 class DateRangeForm(forms.Form):
-    start_date = forms.DateField(label='Start Date', widget=forms.TextInput(attrs={'type': 'date'}))
-    end_date = forms.DateField(label='End Date', widget=forms.TextInput(attrs={'type': 'date'}))
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+
+        if start_date:
+            if start_date > timezone.now().date():
+                raise ValidationError("Start date cannot be in the future.")
+
+        return cleaned_data

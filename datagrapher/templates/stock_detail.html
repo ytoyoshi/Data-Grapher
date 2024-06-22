@@ -1,0 +1,35 @@
+{% extends 'base.html' %} 
+{% block title %}Stock Data Detail{% endblock %} 
+{% block content %}
+<div class="card">
+  <div class="card-header bg-primary text-white">{{ stock.name }} ({{ stock.symbol }}) - Stock Data Detail</div>
+  <div class="card-body">
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+      <table class="table table-bordered table-striped">
+        <thead class="thead-dark" style="position: sticky; top: 0; background: #343a40; z-index: 1;">
+          <tr>
+            <th>Date</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>Volume</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for data in stock_data %}
+          <tr>
+            <td>{{ data.date }}</td>
+            <td>{{ data.open }}</td>
+            <td>{{ data.high }}</td>
+            <td>{{ data.low }}</td>
+            <td>{{ data.close }}</td>
+            <td>{{ data.volume }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
